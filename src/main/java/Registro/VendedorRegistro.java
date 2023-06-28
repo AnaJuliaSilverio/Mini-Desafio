@@ -1,9 +1,8 @@
 package Registro;
 
-import Model.Cliente;
-import Model.Venda;
-import Model.Vendedor;
+import Model.*;
 import Repository.ClienteRepository;
+import Repository.ProdutoRepository;
 import Repository.VendaRepository;
 import Repository.VendedorRepository;
 import java.util.Scanner;
@@ -12,24 +11,20 @@ public class VendedorRegistro {
     private ClienteRepository clienteRepository = new ClienteRepository();
     private VendaRepository vendaRepository = new VendaRepository();
     private VendedorRepository vendedorRepository = new VendedorRepository();
+    private ProdutoRepository produtoRepository = new ProdutoRepository();
     private Vendedor vendedor;
     static Scanner scanner = new Scanner(System.in);
     public void cadastrarVendedor() {
-
         System.out.println("Qual seu nome: ");
         String nomeC = scanner.nextLine();
-        if (!nomeC.matches("[a-zA-Z]+")) {
-            throw new IllegalArgumentException("Valor informado não é uma string, digite seu nome com uma String valida e sem espaço!");
-        }
+        VerificaInputs.verificaNome(nomeC);
         System.out.println("Qual seu email: ");
-        String emailC = scanner.nextLine();
-        if (!emailC.contains("@")) {
-            throw new IllegalArgumentException("O email precisa conter o @");
-        }
+        String emailC = scanner.next();
+        if (!VerificaInputs.verificarEmail(emailC)) throw new IllegalArgumentException("Email invalido");
 
         System.out.println("Qual seu cpf: ");
         String cpfC = scanner.next();
-
+        if (!VerificaInputs.verificarCpf(cpfC))throw new IllegalArgumentException("CPF invalido");
         System.out.println("Digite a senha:");
         String senha = scanner.next();
         vendedor= new Vendedor(emailC, nomeC, cpfC, senha);
@@ -40,9 +35,7 @@ public class VendedorRegistro {
     public void loginVendedor() {
         System.out.println("Informe seu e-mail");
         String email = scanner.next();
-        if (!(email.contains("@"))) {
-            throw new UnsupportedOperationException();
-        }
+        if (!VerificaInputs.verificarEmail(email)) throw new IllegalArgumentException("Email invalido");
         System.out.println("Informe sua senha");
         String senha = scanner.next();
         if (vendedorRepository.procuraVendedorEmail(email, senha) == null) {
@@ -51,6 +44,7 @@ public class VendedorRegistro {
         vendedor = vendedorRepository.procuraVendedorEmail(email, senha);
     }
     public void vendasPorCliente(String cpf) {
+        if (!VerificaInputs.verificarCpf(cpf))throw new IllegalArgumentException("CPF invalido");
         for (Venda venda : vendaRepository.getVendas()) {
             if (venda.getCliente().getCpf().equals(cpf)) {
                 System.out.println(venda.mostrarVenda());
@@ -59,6 +53,7 @@ public class VendedorRegistro {
         }
     }
     public void vendasPorVendedor(String email){
+        if (!VerificaInputs.verificarEmail(email)) throw new IllegalArgumentException("Email invalido");
         for (Venda venda: vendaRepository.getVendas()) {
             if (venda.getVendedor().getEmail().equals(email)){
                 System.out.println( venda.mostrarVenda());
@@ -88,4 +83,11 @@ public class VendedorRegistro {
             System.out.println();
         }
     }
+    public void exibirEstoque(){
+        for (Produto produto: produtoRepository.getEstoqueProdutos()) {
+            System.out.println(produto.mostrarProduto()+"\nQuantidade: "+produto.getQuantidade());
+        }
+    }
+
 }
+

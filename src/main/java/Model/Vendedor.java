@@ -3,7 +3,7 @@ package Model;
 public class Vendedor {
     private String email, nome, senha, cpf;
 
-    public Vendedor(String email, String nome, String cpf,String senha) {
+    public Vendedor(String nome,String cpf,String email,String senha) {
         this.email = email;
         this.nome = nome;
         this.cpf = cpf;

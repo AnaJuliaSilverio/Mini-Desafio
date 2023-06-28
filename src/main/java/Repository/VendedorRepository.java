@@ -9,6 +9,11 @@ import java.util.Random;
 
 public class VendedorRepository {
     private List<Vendedor> vendedores = new ArrayList<>();
+
+    public VendedorRepository() {
+        iniciarBDVendedor();
+    }
+
     public List<Vendedor> getVendedores() {
         if (vendedores.isEmpty())throw new NullPointerException("Lista de vendedores vazia");
         return vendedores;
@@ -41,6 +46,12 @@ public class VendedorRepository {
         Random random = new Random();
         int idvendedoraleatorio = random.nextInt(vendedores.size())+1;
         return vendedores.get(idvendedoraleatorio);
-
+    }
+    public void iniciarBDVendedor(){
+        adicionarVendedor(new Vendedor("Eduardo", "478.539.980-58", "eduardo@example.com","G!h6F"));
+        adicionarVendedor(new Vendedor("Fernanda", "119.831.720-57", "fernanda@example.com", "E@i4D"));
+        adicionarVendedor(new Vendedor("Ricardo", "427.038.280-55", "ricardo@example.com", "B%v7N"));
+        adicionarVendedor(new Vendedor("Juliana", "796.287.960-20", "juliana@example.com", "K$m1I"));
+        adicionarVendedor(new Vendedor("Mariana", "454.318.410-68", "mariana@example.com", "T&u0S"));
     }
 }

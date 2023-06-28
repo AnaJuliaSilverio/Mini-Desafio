@@ -1,10 +1,8 @@
 package Registro;
 
-import Model.Cliente;
-import Model.Produto;
-import Model.Venda;
-import Model.Vendedor;
+import Model.*;
 import Repository.ClienteRepository;
+import Repository.ProdutoRepository;
 import Repository.VendaRepository;
 import Repository.VendedorRepository;
 
@@ -15,29 +13,27 @@ public class ClienteRegistro {
     private ClienteRepository clienteRepository = new ClienteRepository();
     private VendaRepository vendaRepository = new VendaRepository();
     private VendedorRepository vendedorRepository = new VendedorRepository();
+    private ProdutoRepository produtoRepository = new ProdutoRepository();
     private Cliente cliente;
     static Scanner scanner = new Scanner(System.in);
 
     public void cadastrarCliente() {
 
         System.out.println("Qual seu nome: ");
-        String nomeC = scanner.nextLine();
-        if (!nomeC.matches("[a-zA-Z]+")) {
-            throw new IllegalArgumentException("Valor informado não é uma string, digite seu nome com uma String valida e sem espaço!");
-        }
+        String nomeC = VerificaInputs.verificaBufferScaner(scanner.nextLine());
+        VerificaInputs.verificaNome(nomeC);
         System.out.println("Qual seu email: ");
-        String emailC = scanner.nextLine();
-        if (!emailC.contains("@")) {
-            throw new IllegalArgumentException("O email precisa conter o @");
-        }
+        String emailC =  VerificaInputs.verificaBufferScaner(scanner.nextLine());
+        if (!VerificaInputs.verificarEmail(emailC)) throw new IllegalArgumentException("Email invalido");
 
         System.out.println("Qual seu cpf: ");
         String cpfC = scanner.next();
+        if (!VerificaInputs.verificarCpf(cpfC))throw new IllegalArgumentException("CPF invalido");
 
         System.out.println("Digite a senha:");
         String senha = scanner.next();
-        cliente = new Cliente(emailC, nomeC, cpfC, senha);
-        if (!clienteRepository.clienteJaExiste(cliente)) {
+        cliente = new Cliente(nomeC, cpfC,emailC, senha);
+        if (clienteRepository.clienteJaExiste(cliente)) {
             throw new IllegalArgumentException("Cliente já cadastrado");
         }
     }
@@ -45,32 +41,29 @@ public class ClienteRegistro {
     public void loginCliente() {
         System.out.println("Informe seu e-mail");
         String email = scanner.next();
-        if (!(email.contains("@"))) {
-            throw new UnsupportedOperationException();
-        }
+        if (!VerificaInputs.verificarEmail(email)) throw new IllegalArgumentException("Email invalido");
         System.out.println("Informe sua senha");
         String senha = scanner.next();
-        if (clienteRepository.procuraClienteEmail(email, senha) == null) {
-            throw new IllegalArgumentException("Cliente não cadastrado");
-        }
+        if (clienteRepository.procuraClienteEmail(email, senha) == null) throw new IllegalArgumentException("Cliente não cadastrado");
         cliente = clienteRepository.procuraClienteEmail(email, senha);
     }
 
     public void comprarProduto() {
-
+        produtoRepository.listarProdutos();
         System.out.println("Qual o codigo do produto que deseja: ");
         int codigo = scanner.nextInt();
-        Produto produto = new Produto(0, "", 0);
+        Produto produto = produtoRepository.produtoExiste(codigo);
+        if (produto==null) throw new IllegalArgumentException("Código do produto inválido");
 
-        if (produto.getNomeProduto().isEmpty()) {
-            throw new IllegalArgumentException("Codigo não encontrado");
-        }
         System.out.println("Quantas unidades deseja desse produto: ");
         int quantidade = scanner.nextInt();
-        System.out.println();
+        produtoRepository.retirarUnidadeDoProduto(codigo,quantidade);
         Vendedor vendedor = vendedorRepository.turnoDaVez();
-
-//        vendaRepository.adicionarVenda(new Venda(vendedor, cliente, codigo, produto.getNomeProduto(), produto.getPreco(), quantidade));
+        Venda venda = new Venda(vendedor, cliente,produto,quantidade);
+        System.out.println("----------VENDA REALIZADA----------");
+        venda.mostrarVenda();
+        System.out.println("_----------------------------------");
+        vendaRepository.adicionarVenda(venda);
     }
 }
 

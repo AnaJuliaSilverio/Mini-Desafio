@@ -14,12 +14,12 @@ public class Venda {
     private double totalCompra;
     private String dataCompra;
 
-    public Venda(Vendedor vendedor, Cliente cliente, Produto produto, int quantidade, double totalCompra) {
+    public Venda(Vendedor vendedor, Cliente cliente, Produto produto, int quantidade) {
         this.vendedor = vendedor;
         this.cliente = cliente;
         this.produto = produto;
         this.quantidade = quantidade;
-        this.totalCompra = totalCompra;
+        this.totalCompra = quantidade*produto.getPreco();
         LocalDate data = LocalDate.now();
         DateTimeFormatter formatarData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         dataCompra = data.format(formatarData);
