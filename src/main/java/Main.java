@@ -2,14 +2,25 @@ import Model.Cliente;
 import Model.Vendedor;
 import Registro.ClienteRegistro;
 import Registro.VendedorRegistro;
+import Repository.ClienteRepository;
+import Repository.ProdutoRepository;
+import Repository.VendaRepository;
+import Repository.VendedorRepository;
 
 import java.util.Scanner;
 
 import static java.lang.System.exit;
 
 public class Main {
-    private static VendedorRegistro vendedorRegistro = new VendedorRegistro();
-    private static ClienteRegistro clienteRegistro = new ClienteRegistro();
+
+
+    private static ClienteRepository clienteRepository = new ClienteRepository();
+    private static VendaRepository vendaRepository = new VendaRepository();
+    private static VendedorRepository vendedorRepository = new VendedorRepository();
+    private static ProdutoRepository produtoRepository = new ProdutoRepository();
+    private static VendedorRegistro vendedorRegistro = new VendedorRegistro(clienteRepository,vendaRepository,vendedorRepository,produtoRepository);
+    private static ClienteRegistro clienteRegistro = new ClienteRegistro(clienteRepository,vendaRepository,vendedorRepository,produtoRepository);
+
     private static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
 
@@ -75,7 +86,7 @@ public class Main {
                     default:
                         System.out.println("Opção inválida");
                 }
-            }catch (IllegalArgumentException erro){
+            }catch (IllegalArgumentException|NullPointerException erro){
                 System.out.println(erro.getMessage());
             }
 

@@ -8,18 +8,27 @@ import Repository.VendedorRepository;
 import java.util.Scanner;
 
 public class VendedorRegistro {
-    private ClienteRepository clienteRepository = new ClienteRepository();
-    private VendaRepository vendaRepository = new VendaRepository();
-    private VendedorRepository vendedorRepository = new VendedorRepository();
-    private ProdutoRepository produtoRepository = new ProdutoRepository();
+    private ClienteRepository clienteRepository;
+    private VendaRepository vendaRepository;
+    private VendedorRepository vendedorRepository;
+    private ProdutoRepository produtoRepository ;
     private Vendedor vendedor;
     static Scanner scanner = new Scanner(System.in);
+
+    public VendedorRegistro(ClienteRepository clienteRepository, VendaRepository vendaRepository, VendedorRepository vendedorRepository, ProdutoRepository produtoRepository) {
+        this.clienteRepository = clienteRepository;
+        this.vendaRepository = vendaRepository;
+        this.vendedorRepository = vendedorRepository;
+        this.produtoRepository = produtoRepository;
+    }
+
     public void cadastrarVendedor() {
+
         System.out.println("Qual seu nome: ");
-        String nomeC = scanner.nextLine();
+        String nomeC = VerificaInputs.verificaBufferScaner(scanner.nextLine());
         VerificaInputs.verificaNome(nomeC);
         System.out.println("Qual seu email: ");
-        String emailC = scanner.next();
+        String emailC =  VerificaInputs.verificaBufferScaner(scanner.nextLine());
         if (!VerificaInputs.verificarEmail(emailC)) throw new IllegalArgumentException("Email invalido");
 
         System.out.println("Qual seu cpf: ");
@@ -28,7 +37,7 @@ public class VendedorRegistro {
         System.out.println("Digite a senha:");
         String senha = scanner.next();
         vendedor= new Vendedor(emailC, nomeC, cpfC, senha);
-        if (!vendedorRepository.vendedorJaExiste(vendedor)) {
+        if (vendedorRepository.vendedorJaExiste(vendedor)) {
             throw new IllegalArgumentException("Vendedor já cadastrado");
         }
     }

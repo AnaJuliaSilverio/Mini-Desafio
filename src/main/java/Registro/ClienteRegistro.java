@@ -10,12 +10,19 @@ import java.time.LocalDate;
 import java.util.Scanner;
 
 public class ClienteRegistro {
-    private ClienteRepository clienteRepository = new ClienteRepository();
-    private VendaRepository vendaRepository = new VendaRepository();
-    private VendedorRepository vendedorRepository = new VendedorRepository();
-    private ProdutoRepository produtoRepository = new ProdutoRepository();
+    private ClienteRepository clienteRepository;
+    private VendaRepository vendaRepository;
+    private VendedorRepository vendedorRepository;
+    private ProdutoRepository produtoRepository;
     private Cliente cliente;
     static Scanner scanner = new Scanner(System.in);
+
+    public ClienteRegistro(ClienteRepository clienteRepository, VendaRepository vendaRepository, VendedorRepository vendedorRepository, ProdutoRepository produtoRepository) {
+        this.clienteRepository = clienteRepository;
+        this.vendaRepository = vendaRepository;
+        this.vendedorRepository = vendedorRepository;
+        this.produtoRepository = produtoRepository;
+    }
 
     public void cadastrarCliente() {
 
@@ -36,6 +43,7 @@ public class ClienteRegistro {
         if (clienteRepository.clienteJaExiste(cliente)) {
             throw new IllegalArgumentException("Cliente já cadastrado");
         }
+        clienteRepository.adicionarCliente(cliente);
     }
 
     public void loginCliente() {
@@ -61,7 +69,7 @@ public class ClienteRegistro {
         Vendedor vendedor = vendedorRepository.turnoDaVez();
         Venda venda = new Venda(vendedor, cliente,produto,quantidade);
         System.out.println("----------VENDA REALIZADA----------");
-        venda.mostrarVenda();
+        System.out.println(venda.mostrarVenda());
         System.out.println("_----------------------------------");
         vendaRepository.adicionarVenda(venda);
     }
